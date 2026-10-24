@@ -1,0 +1,26 @@
+# ---- 构建产物 ----
+build/
+dist/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.zip
+
+# ---- 签名与本地工具链 ----
+keystore/
+*.jks
+*.keystore
+.tools/
+
+# ---- 编辑器 / 系统 ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# ---- 日志与临时文件 ----
+*.log

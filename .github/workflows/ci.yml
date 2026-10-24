@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: 构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: 安装 Android SDK
+        uses: android-actions/setup-android@v3
+
+      # build.sh 会自动回落到 ANDROID_SDK_ROOT / ANDROID_HOME
+      - name: 安装 platform 与 build-tools
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      # 走 Makefile，保证 CI 与本地是同一条构建路径
+      - name: 构建
+        run: make build
+
+      - name: 生成校验和
+        run: cd build && sha256sum *.apk > SHA256SUMS.txt && cat SHA256SUMS.txt
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: memclean-apk
+          path: |
+            build/memclean-*.apk
+            build/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14

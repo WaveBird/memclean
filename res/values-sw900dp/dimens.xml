@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  大档：smallest width ≥ 900dp，约 1920×1080dp。
+  典型是 4K 面板 + 320dpi 的电视，或用 wm density 把 1080p 调成 160dpi 的场景。
+-->
+<resources>
+    <dimen name="pad_screen_h">92dp</dimen>
+    <dimen name="pad_screen_v">38dp</dimen>
+
+    <dimen name="icon_head">101dp</dimen>
+    <dimen name="gap_icon_text">32dp</dimen>
+    <dimen name="gap_sub_top">9dp</dimen>
+    <dimen name="text_title">46sp</dimen>
+    <dimen name="text_sub">20sp</dimen>
+
+    <dimen name="gap_header_stats">32dp</dimen>
+    <dimen name="card_pad_h">40dp</dimen>
+    <dimen name="card_pad_v">26dp</dimen>
+    <dimen name="radius_card">23dp</dimen>
+    <dimen name="gap_card">29dp</dimen>
+    <dimen name="text_card_cap">22sp</dimen>
+    <dimen name="text_card_val">43sp</dimen>
+
+    <dimen name="gap_status_top">23dp</dimen>
+    <dimen name="gap_status_bottom">15dp</dimen>
+    <dimen name="text_status">23sp</dimen>
+
+    <dimen name="gap_btn">10dp</dimen>
+    <dimen name="btn_height">92dp</dimen>
+    <dimen name="btn_pad_h">49dp</dimen>
+    <dimen name="btn_pad_v">20dp</dimen>
+    <dimen name="radius_btn">20dp</dimen>
+    <dimen name="text_btn">32sp</dimen>
+    <dimen name="btn_small_w">275dp</dimen>
+
+    <dimen name="gap_tip_top">29dp</dimen>
+    <dimen name="line_spacing_tip">9dp</dimen>
+    <dimen name="text_tip">19sp</dimen>
+    <dimen name="text_hint">20sp</dimen>
+
+    <dimen name="bar_pad_h">81dp</dimen>
+    <dimen name="bar_pad_v">46dp</dimen>
+    <dimen name="bar_pad_bottom">26dp</dimen>
+    <dimen name="hint_pad_bottom">20dp</dimen>
+    <dimen name="list_pad_h">58dp</dimen>
+    <dimen name="list_pad_bottom">35dp</dimen>
+    <dimen name="list_row_pad_h">29dp</dimen>
+    <dimen name="list_row_pad_v">19dp</dimen>
+    <dimen name="icon_row">58dp</dimen>
+    <dimen name="gap_icon_row">26dp</dimen>
+    <dimen name="text_row_name">27sp</dimen>
+    <dimen name="text_row_sub">17sp</dimen>
+    <dimen name="text_row_state">22sp</dimen>
+    <dimen name="radius_row_sel">17dp</dimen>
+
+    <dimen name="stroke_focus">3dp</dimen>
+    <dimen name="stroke_card">1.5dp</dimen>
+</resources>

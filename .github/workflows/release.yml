@@ -1,0 +1,122 @@
+name: Release
+
+# 打 v* 标签即触发发布：
+#   git tag v1.3.0 && git push origin v1.3.0
+#
+# 发布前会校验标签与 AndroidManifest.xml 的 versionName 是否一致，
+# 不一致直接失败，避免发出版本号对不上的包。
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要发布的标签（如 v1.3.0），必须已存在'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: 解析版本
+        id: ver
+        run: |
+          MANIFEST_VER=$(grep -oE 'android:versionName="[^"]+"' AndroidManifest.xml | head -1 | cut -d'"' -f2)
+          MANIFEST_CODE=$(grep -oE 'android:versionCode="[^"]+"' AndroidManifest.xml | head -1 | cut -d'"' -f2)
+          if [ -n "${{ inputs.tag }}" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "manifest=${MANIFEST_VER}" >> $GITHUB_OUTPUT
+          echo "code=${MANIFEST_CODE}" >> $GITHUB_OUTPUT
+          echo "标签：${TAG} / Manifest：${MANIFEST_VER} (${MANIFEST_CODE})"
+
+      - name: 校验版本一致性
+        run: |
+          TAG_VER="${{ steps.ver.outputs.tag }}"
+          TAG_VER="${TAG_VER#v}"
+          MANIFEST_VER="${{ steps.ver.outputs.manifest }}"
+          if [ "$TAG_VER" != "$MANIFEST_VER" ]; then
+            echo "::error::标签版本 ${TAG_VER} 与 AndroidManifest.xml 的 versionName ${MANIFEST_VER} 不一致"
+            echo "先把 AndroidManifest.xml 改成 ${TAG_VER}，提交后再打标签。"
+            exit 1
+          fi
+
+      - name: 安装 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: 安装 Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 安装 platform 与 build-tools
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: 构建
+        run: make build
+
+      - name: 生成校验和
+        run: |
+          cd build
+          sha256sum *.apk > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      # 约定：每个 vX.Y.Z 标签对应 docs/releases/vX.Y.Z.md，缺失时回落到 CHANGELOG
+      - name: 准备发布说明
+        run: |
+          F="docs/releases/${{ steps.ver.outputs.tag }}.md"
+          if [ ! -f "$F" ]; then
+            echo "::warning::未找到 ${F}，回落到 CHANGELOG"
+            {
+              echo "详见 [CHANGELOG.md](CHANGELOG.md)。"
+              echo
+              echo "## 安装"
+              echo
+              echo '```bash'
+              echo "adb install -r memclean-${{ steps.ver.outputs.manifest }}.apk"
+              echo "adb shell appops set com.mibox3.memclean GET_USAGE_STATS allow"
+              echo '```'
+            } > "$F"
+          fi
+
+      - name: 发布
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
+          body_path: docs/releases/${{ steps.ver.outputs.tag }}.md
+          files: |
+            build/memclean-*.apk
+            build/SHA256SUMS.txt
+          draft: false
+          # 带 - 的标签（如 v1.4.0-beta1）自动标记为预发布
+          prerelease: ${{ contains(steps.ver.outputs.tag, '-') }}
+          fail_on_unmatched_files: true
+
+      - name: 汇总
+        run: |
+          {
+            echo "### 发布完成：${{ steps.ver.outputs.tag }}"
+            echo
+            echo "| 项目 | 值 |"
+            echo "| --- | --- |"
+            echo "| versionName | \`${{ steps.ver.outputs.manifest }}\` |"
+            echo "| versionCode | \`${{ steps.ver.outputs.code }}\` |"
+            echo "| 产物 | \`build/memclean-${{ steps.ver.outputs.manifest }}.apk\` |"
+            echo
+            cat build/SHA256SUMS.txt
+          } >> $GITHUB_STEP_SUMMARY

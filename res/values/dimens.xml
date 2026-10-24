@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  基准档：smallest width < 600dp 的电视（约 960×540dp，
+  例如 1080p 电视被系统报成 320dpi 的情况）。
+  其它档位见 values-sw600dp / values-sw900dp。
+-->
+<resources>
+    <!-- 页面留白 -->
+    <dimen name="pad_screen_h">48dp</dimen>
+    <dimen name="pad_screen_v">20dp</dimen>
+
+    <!-- 标题区 -->
+    <dimen name="icon_head">53dp</dimen>
+    <dimen name="gap_icon_text">17dp</dimen>
+    <dimen name="gap_sub_top">5dp</dimen>
+    <dimen name="text_title">24sp</dimen>
+    <dimen name="text_sub">11sp</dimen>
+
+    <!-- 统计卡片 -->
+    <dimen name="gap_header_stats">17dp</dimen>
+    <dimen name="card_pad_h">21dp</dimen>
+    <dimen name="card_pad_v">14dp</dimen>
+    <dimen name="radius_card">12dp</dimen>
+    <dimen name="gap_card">15dp</dimen>
+    <dimen name="text_card_cap">11sp</dimen>
+    <dimen name="text_card_val">23sp</dimen>
+
+    <!-- 状态行 -->
+    <dimen name="gap_status_top">12dp</dimen>
+    <dimen name="gap_status_bottom">8dp</dimen>
+    <dimen name="text_status">12sp</dimen>
+
+    <!-- 按钮 -->
+    <dimen name="gap_btn">5dp</dimen>
+    <dimen name="btn_height">48dp</dimen>
+    <dimen name="btn_pad_h">26dp</dimen>
+    <dimen name="btn_pad_v">10dp</dimen>
+    <dimen name="radius_btn">11dp</dimen>
+    <dimen name="text_btn">16sp</dimen>
+    <dimen name="btn_small_w">142dp</dimen>
+
+    <!-- 底部说明 -->
+    <dimen name="gap_tip_top">15dp</dimen>
+    <dimen name="line_spacing_tip">5dp</dimen>
+    <dimen name="text_tip">10sp</dimen>
+    <dimen name="text_hint">11sp</dimen>
+
+    <!-- 列表页 -->
+    <dimen name="bar_pad_h">42dp</dimen>
+    <dimen name="bar_pad_v">24dp</dimen>
+    <dimen name="bar_pad_bottom">14dp</dimen>
+    <dimen name="hint_pad_bottom">11dp</dimen>
+    <dimen name="list_pad_h">30dp</dimen>
+    <dimen name="list_pad_bottom">18dp</dimen>
+    <dimen name="list_row_pad_h">15dp</dimen>
+    <dimen name="list_row_pad_v">10dp</dimen>
+    <dimen name="icon_row">30dp</dimen>
+    <dimen name="gap_icon_row">14dp</dimen>
+    <dimen name="text_row_name">14sp</dimen>
+    <dimen name="text_row_sub">9sp</dimen>
+    <dimen name="text_row_state">11sp</dimen>
+    <dimen name="radius_row_sel">9dp</dimen>
+
+    <!-- 通用 -->
+    <dimen name="stroke_focus">1.5dp</dimen>
+    <dimen name="stroke_card">1dp</dimen>
+</resources>
