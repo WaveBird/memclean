@@ -99,8 +99,8 @@
 - 开机自启（`BOOT_COMPLETED`）与 15 分钟 `AlarmManager` 看门狗。
 - 1.5 秒节流，避免连续快速切换时重复触发。
 
-[未发布]: https://github.com/OWNER/memclean/compare/v1.3.0...HEAD
-[1.3.0]: https://github.com/OWNER/memclean/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/OWNER/memclean/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/OWNER/memclean/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/OWNER/memclean/releases/tag/v1.0.0
+[未发布]: https://github.com/WaveBird/memclean/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/WaveBird/memclean/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/WaveBird/memclean/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/WaveBird/memclean/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/WaveBird/memclean/releases/tag/v1.0.0
