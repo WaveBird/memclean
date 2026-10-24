@@ -34,7 +34,7 @@ build:
 	./build.sh
 
 checksum: build
-	@cd build && $(SHA256) *.apk > SHA256SUMS.txt && cat SHA256SUMS.txt
+	@cd build && $(SHA256) memclean-*.apk > SHA256SUMS.txt && cat SHA256SUMS.txt
 
 release: checksum
 	@mkdir -p dist
