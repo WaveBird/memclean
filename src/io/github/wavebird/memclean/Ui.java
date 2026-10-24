@@ -1,4 +1,4 @@
-package com.mibox3.memclean;
+package io.github.wavebird.memclean;
 
 import android.content.Context;
 import android.graphics.Color;

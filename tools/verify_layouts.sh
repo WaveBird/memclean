@@ -11,7 +11,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 
 DEV="${1:-192.168.1.172:5555}"
-PKG=com.mibox3.memclean
+PKG=io.github.wavebird.memclean
 OUT=build/shots
 mkdir -p "$OUT"
 

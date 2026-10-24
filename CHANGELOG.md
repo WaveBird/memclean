@@ -13,6 +13,38 @@
 - 清理记录导出为 CSV
 - 前台服务模式，适配 Android 8.0+ 的后台限制
 
+## [2.0.0] - 2026-10-24
+
+**破坏性变更**：包名从 `com.mibox3.memclean` 改为 `io.github.wavebird.memclean`。
+这是通用工具，不应该把某个具体型号写进应用标识。升级方式见下。
+
+### 变更
+
+- **包名 `com.mibox3.memclean` → `io.github.wavebird.memclean`**。
+  旧包会被当成另一个应用，无法覆盖安装，需要先卸载旧版。
+- **白名单初始化改为运行时探测**。此前 `Prefs.SEED` 硬编码了 `com.oversea.aslauncher`
+  （Emotn 桌面）和 `com.android.inputmethod.pinyin`（AOSP 拼音输入法），
+  换台盒子或换个桌面就会保护错对象。现在改为：
+  - 桌面：`queryIntentActivities(ACTION_MAIN + CATEGORY_HOME)`，装了几个保护几个
+  - 输入法：`InputMethodManager.getInputMethodList()`，并用
+    `Settings.Secure.DEFAULT_INPUT_METHOD` 兜底
+  - 只保留 `com.android.systemui`、`com.android.bluetooth`、`com.android.phone`、
+    `com.android.providers.telephony` 这四个 AOSP 标准包名
+- `Prefs.isLocked(pkg)` → `Prefs.isLocked(ctx, pkg)`，因为锁定集合现在是运行时算的。
+- 版本号 `1.3.0` → `2.0.0`，`versionCode` `10300` → `20000`。
+
+### 升级说明
+
+包名变了，Android 视为两个不同的应用，**不能覆盖安装**：
+
+```bash
+adb uninstall com.mibox3.memclean      # 卸载旧版（白名单与历史记录会丢）
+adb install -r memclean-2.0.0.apk
+adb shell appops set io.github.wavebird.memclean GET_USAGE_STATS allow
+```
+
+新装后白名单会按当前设备重新探测生成，不需要手动重配。
+
 ## [1.3.0] - 2026-10-24
 
 ### 修复
@@ -99,7 +131,8 @@
 - 开机自启（`BOOT_COMPLETED`）与 15 分钟 `AlarmManager` 看门狗。
 - 1.5 秒节流，避免连续快速切换时重复触发。
 
-[未发布]: https://github.com/WaveBird/memclean/compare/v1.3.0...HEAD
+[未发布]: https://github.com/WaveBird/memclean/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/WaveBird/memclean/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/WaveBird/memclean/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/WaveBird/memclean/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/WaveBird/memclean/compare/v1.0.0...v1.1.0

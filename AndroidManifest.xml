@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mibox3.memclean"
-    android:versionCode="10300"
-    android:versionName="1.3.0">
+    package="io.github.wavebird.memclean"
+    android:versionCode="20000"
+    android:versionName="2.0.0">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="22" />
 
@@ -26,7 +26,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.mibox3.memclean.WATCHDOG" />
+                <action android:name="io.github.wavebird.memclean.WATCHDOG" />
             </intent-filter>
         </receiver>
 

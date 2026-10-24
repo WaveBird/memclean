@@ -8,7 +8,8 @@
 
 **给老电视盒子用的自动内存清理服务**：切换到新应用时，自动回收其他应用的后台进程。
 
-为 1GB 内存的老盒子（如小米盒子3 / MDZ-16-AA、Amlogic S905）而写。不挑桌面，不依赖 root，不修改任何第三方应用。
+适用于任何 Android 5.0+ 的电视盒子或电视棒。不挑桌面，不依赖 root，不修改任何第三方应用，
+代码里也不写死任何机型的包名——桌面和输入法都是运行时探测的。
 
 <img src="docs/shots/main_sw600dp_1280x720dp.png" width="720" alt="主界面">
 
@@ -105,13 +106,13 @@
 
 ```bash
 adb connect <盒子IP>:5555
-adb install -r memclean-1.3.0.apk
+adb install -r memclean-2.0.0.apk
 
 # 授予「使用情况访问」权限（必须，否则检测不到应用切换）
-adb shell appops set com.mibox3.memclean GET_USAGE_STATS allow
+adb shell appops set io.github.wavebird.memclean GET_USAGE_STATS allow
 
 # 启动服务
-adb shell am startservice -n com.mibox3.memclean/.MemCleanService
+adb shell am startservice -n io.github.wavebird.memclean/.MemCleanService
 ```
 
 ### 方式二：自行编译
@@ -134,7 +135,8 @@ adb shell am startservice -n com.mibox3.memclean/.MemCleanService
 
 五个入口：开关自动清理、白名单管理、清理记录、切换清理范围、立即清理一次。
 
-**建议先观察一两天再调白名单。** 默认保护了桌面、系统界面、输入法、蓝牙、电话，
+**建议先观察一两天再调白名单。** 首次启动时会自动把**当前桌面**、**已安装的输入法**、
+系统界面、蓝牙、电话加入保护名单——这些都是运行时探测的，不依赖具体机型。
 其他应用都会被清。如果你有后台常驻需求（比如后台放歌、后台下载），把它加进白名单。
 
 ## 实测效果
@@ -167,8 +169,8 @@ I/MemClean: cleaned 46 pkgs after switch to com.oversea.aslauncher in 132ms
 | --- | --- |
 | minSdk | 21（Android 5.0） |
 | targetSdk | 22 |
-| 测试机型 | 小米盒子3 MDZ-16-AA，Android 5.1.1，Amlogic S905，1GB RAM |
-| 测试桌面 | Emotn UI 1.0.8.7 |
+| 实测机型 | 小米盒子3 MDZ-16-AA，Android 5.1.1，Amlogic S905，1GB RAM |
+| 实测桌面 | Emotn UI 1.0.8.7（程序不依赖具体桌面） |
 | 第三方依赖 | 无 |
 
 在 Android 8.0+ 上，后台服务受限，需要改为前台服务并申请 `FOREGROUND_SERVICE`。
@@ -217,6 +219,21 @@ I/MemClean: cleaned 46 pkgs after switch to com.oversea.aslauncher in 132ms
 所以本项目用 `setNextFocusUpId/DownId/LeftId/RightId` 写死了一条焦点链。
 **电视布局里只要出现「整宽 + 分栏」混排，就必须自己指定焦点，不能指望自动搜索。**
 
+### 不绑定具体机型
+
+代码里没有任何一处写死某个盒子或某个桌面的包名。需要保护的系统组件全部运行时探测：
+
+| 组件 | 获取方式 |
+| --- | --- |
+| 桌面 | `queryIntentActivities(ACTION_MAIN + CATEGORY_HOME)`，装了几个就保护几个 |
+| 输入法 | `InputMethodManager.getInputMethodList()` + `Settings.Secure.DEFAULT_INPUT_METHOD` 兜底 |
+| 系统界面 | 固定 `com.android.systemui`，所有 Android 都有 |
+
+这样换一台盒子、换一个桌面（当贝、Emotn、Quiet TV、原厂……）都不用改代码。
+只有蓝牙、电话、电话数据库这三个 AOSP 标准包名是写死的——它们在所有 Android 上都一样。
+
+包名 `io.github.wavebird.memclean` 也不含任何机型信息。
+
 ## 项目结构
 
 ```
@@ -232,7 +249,7 @@ memclean/
 │   ├── values/dimens.xml          尺寸资源 · 小档
 │   ├── values-sw600dp/dimens.xml  尺寸资源 · 基准档
 │   └── values-sw900dp/dimens.xml  尺寸资源 · 大档
-├── src/com/mibox3/memclean/
+├── src/io/github/wavebird/memclean/
 │   ├── MemCleanService.java       前台监听 + 清理调度 + 看门狗
 │   ├── Cleaner.java               包枚举、缓存、执行清理（服务与界面共用）
 │   ├── BootReceiver.java          开机自启
@@ -279,7 +296,7 @@ unzip -q bt34.zip       -d sdk/build-tools/
 make build
 # 或直接用脚本
 JAVA_HOME=/path/to/jdk17 ANDROID_SDK=$PWD/sdk ./build.sh
-# → build/memclean-1.3.0.apk
+# → build/memclean-2.0.0.apk
 ```
 
 `make` 需要系统有可用的 `make`：
@@ -333,23 +350,23 @@ make icon
 版本号只在 `AndroidManifest.xml` 里维护，`build.sh` 与 CI 都会读它：
 
 ```xml
-android:versionCode="10300"
-android:versionName="1.3.0"
+android:versionCode="20000"
+android:versionName="2.0.0"
 ```
 
-`versionCode` 用 `MMmmpp` 形式（`1.3.0` → `10300`），保证单调递增。
+`versionCode` 用 `MMmmpp` 形式（`2.0.0` → `20000`），保证单调递增。
 
 ### 2. 更新文档
 
-- `CHANGELOG.md` 加一条 `## [1.3.0] - YYYY-MM-DD`
-- `docs/releases/v1.3.0.md` 写发布说明，**这个文件会直接作为 Release 正文**
+- `CHANGELOG.md` 加一条 `## [2.0.0] - YYYY-MM-DD`
+- `docs/releases/v2.0.0.md` 写发布说明，**这个文件会直接作为 Release 正文**
 
 ### 3. 打标签推送
 
 ```bash
-git commit -am "chore: release v1.3.0"
-make tag          # 校验工作区干净、标签不重复，然后创建 v1.3.0
-git push origin v1.3.0
+git commit -am "chore: release v2.0.0"
+make tag          # 校验工作区干净、标签不重复，然后创建 v2.0.0
+git push origin v2.0.0
 ```
 
 ### 4. 自动发布
@@ -376,7 +393,7 @@ git push origin v1.3.0
 
 **Q：装完没反应，状态行显示红色？**
 
-没授予「使用情况访问」权限。用 `adb shell appops set com.mibox3.memclean GET_USAGE_STATS allow`，
+没授予「使用情况访问」权限。用 `adb shell appops set io.github.wavebird.memclean GET_USAGE_STATS allow`，
 或在系统设置里手动打开。
 
 **Q：清理后应用重新打开变慢了？**

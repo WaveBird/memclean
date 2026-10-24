@@ -1,4 +1,4 @@
-package com.mibox3.memclean;
+package io.github.wavebird.memclean;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
@@ -107,7 +107,7 @@ public class WhitelistActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Row r = rows.get(position);
-                if (Prefs.isLocked(r.pkg)) {
+                if (Prefs.isLocked(WhitelistActivity.this, r.pkg)) {
                     Toast.makeText(WhitelistActivity.this,
                             "系统关键组件，不能取消保护", Toast.LENGTH_SHORT).show();
                     return;
@@ -252,7 +252,7 @@ public class WhitelistActivity extends Activity {
 
             Row r = rows.get(position);
             boolean on = Prefs.isWhitelisted(WhitelistActivity.this, r.pkg);
-            boolean locked = Prefs.isLocked(r.pkg);
+            boolean locked = Prefs.isLocked(WhitelistActivity.this, r.pkg);
             h.icon.setImageDrawable(icon(r.pkg));
             h.name.setText(r.label);
             h.sub.setText(r.pkg + (r.system ? "  · 系统" : ""));

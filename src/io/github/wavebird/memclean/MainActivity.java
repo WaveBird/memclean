@@ -1,4 +1,4 @@
-package com.mibox3.memclean;
+package io.github.wavebird.memclean;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -239,7 +239,7 @@ public class MainActivity extends Activity {
 
         texts.addView(Ui.title(this, "内存守护", R.dimen.text_title));
 
-        TextView sub = Ui.label(this, "切换应用时自动回收后台内存 · v1.3.0",
+        TextView sub = Ui.label(this, "切换应用时自动回收后台内存 · v2.0.0",
                 R.dimen.text_sub, Ui.DIM);
         sub.setPadding(0, Ui.dimen(this, R.dimen.gap_sub_top), 0, 0);
         texts.addView(sub);

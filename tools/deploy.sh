@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 
 DEV="${1:-192.168.1.172:5555}"
 APK="${2:-build/memclean.apk}"
-PKG=com.mibox3.memclean
+PKG=io.github.wavebird.memclean
 
 [ -f "$APK" ] || { echo "找不到 $APK，先跑 ./build.sh"; exit 1; }
 

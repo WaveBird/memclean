@@ -1,4 +1,4 @@
-package com.mibox3.memclean;
+package io.github.wavebird.memclean;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -77,7 +77,7 @@ public class MemCleanService extends Service {
         try {
             AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent i = new Intent(this, BootReceiver.class);
-            i.setAction("com.mibox3.memclean.WATCHDOG");
+            i.setAction("io.github.wavebird.memclean.WATCHDOG");
             PendingIntent pi = PendingIntent.getBroadcast(this, 0, i,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             alarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
