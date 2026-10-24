@@ -77,10 +77,8 @@ jobs:
         run: make build
 
       - name: 生成校验和
-        run: |
-          cd build
-          sha256sum *.apk > SHA256SUMS.txt
-          cat SHA256SUMS.txt
+        # 复用 Makefile 目标，避免和本地出现两套规则（中间产物不该算进去）
+        run: make checksum
 
       # 约定：每个 vX.Y.Z 标签对应 docs/releases/vX.Y.Z.md，缺失时回落到 CHANGELOG
       - name: 准备发布说明

@@ -41,7 +41,8 @@ jobs:
         run: make build
 
       - name: 生成校验和
-        run: cd build && sha256sum *.apk > SHA256SUMS.txt && cat SHA256SUMS.txt
+        # 复用 Makefile 目标，避免和本地出现两套规则（中间产物不该算进去）
+        run: make checksum
 
       - name: 上传产物
         uses: actions/upload-artifact@v4
