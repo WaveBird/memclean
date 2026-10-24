@@ -86,6 +86,8 @@ jobs:
           F="docs/releases/${{ steps.ver.outputs.tag }}.md"
           if [ ! -f "$F" ]; then
             echo "::warning::未找到 ${F}，回落到 CHANGELOG"
+            # 包名从 manifest 读，不要在模板里写死
+            PKG=$(grep -oE 'package="[^"]+"' AndroidManifest.xml | head -1 | cut -d'"' -f2)
             {
               echo "详见 [CHANGELOG.md](CHANGELOG.md)。"
               echo
@@ -93,7 +95,7 @@ jobs:
               echo
               echo '```bash'
               echo "adb install -r memclean-${{ steps.ver.outputs.manifest }}.apk"
-              echo "adb shell appops set com.mibox3.memclean GET_USAGE_STATS allow"
+              echo "adb shell appops set ${PKG} GET_USAGE_STATS allow"
               echo '```'
             } > "$F"
           fi
