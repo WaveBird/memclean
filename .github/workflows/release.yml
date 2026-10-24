@@ -60,11 +60,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: 安装 Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: 安装 platform 与 build-tools
-        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+      # 不用 android-actions/setup-android：它内部会跑 `sdkmanager tools`，
+      # 而 Google 已下架 tools 包，会直接报 "Failed to find package 'tools'"。
+      - name: 准备 Android SDK
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          CMDLINE="$(ls -d "$SDK"/cmdline-tools/* 2>/dev/null | sort -V | tail -1)"
+          echo "SDK     : $SDK"
+          echo "cmdline : $CMDLINE"
+          export PATH="$CMDLINE/bin:$PATH"
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+          echo "ANDROID_SDK=$SDK" >> "$GITHUB_ENV"
 
       - name: 构建
         run: make build
